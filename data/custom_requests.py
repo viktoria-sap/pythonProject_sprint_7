@@ -2,12 +2,13 @@ import json
 import requests
 import allure
 from faker import Faker
+from constants import Urls
 
 fake = Faker()
 
 
 class BaseRequests:
-    host = 'https://qa-scooter.praktikum-services.ru'
+    host = Urls.HOST
 
     def post_request(self, url, data, status):
         response = requests.post(url=url, data=data)
@@ -35,8 +36,8 @@ class BaseRequests:
 
 
 class CourierRequests(BaseRequests):
-    courier_handler = '/api/v1/courier'
-    courier_login_handler = '/api/v1/courier/login'
+    courier_handler = Urls.API_COURIER
+    courier_login_handler = Urls.API_COURIER_LOGIN
 
     @allure.step('Создаем курьера, POST запрос. ОР - статус {status}')
     def post_create_courier(self, data=None, status=201):
@@ -56,7 +57,7 @@ class CourierRequests(BaseRequests):
 
 
 class OrderRequests(BaseRequests):
-    order_handler = '/api/v1/orders'
+    order_handler = Urls.API_ORDER
 
     @allure.step('Создаем заказ, POST запрос. ОР - {status}')
     def post_create_order(self, data=None, status=201):

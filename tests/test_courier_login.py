@@ -5,17 +5,19 @@ import allure
 
 @allure.feature('Тест авторизации курьера')
 class TestCourierLogin:
-    @allure.title('Авторизация курьера с рандомным логином')
-    def test_login_courier(self, create_user_payload, create_courier_and_login):
+    @allure.title('Авторизация курьера')
+    def test_login_courier(self, create_user_payload, create_courier, login_courier):
         payload = create_user_payload(login='random', password='12345678')
-        user = create_courier_and_login(data=payload)
+        create_courier(data=payload)
+        user = login_courier(data=payload)
         assert user['logged_in_courier']['id']
 
 
     @allure.title('Курьер без логина не может авторизоваться')
-    def test_login_courier_without_data(self, create_user_payload, create_courier_and_login):
+    def test_login_courier_without_data(self, create_user_payload, create_courier, login_courier):
         payload = create_user_payload(login='random', password='12345678', firstname='name')
-        create_courier_and_login(data=payload)
+        create_courier(data=payload)
+        login_courier(data=payload)
         payload.pop('login')
         response = CourierRequests().post_login_courier(data=payload, status=400)
         assert response['message'] == 'Недостаточно данных для входа'

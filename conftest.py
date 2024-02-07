@@ -45,16 +45,28 @@ def create_order_payload():
 
 
 @pytest.fixture(scope='function')
-def create_courier_and_login():
+def create_courier():
     courier = {}
 
     def _create_courier(data):
         nonlocal courier
         courier_requests = CourierRequests()
         created_courier = courier_requests.post_create_courier(data=data)
-        logged_in_courier = courier_requests.post_login_courier(data=data)
-        courier = {"created_courier": created_courier, "logged_in_courier": logged_in_courier}
+        courier = {"created_courier": created_courier}
         return courier
 
     yield _create_courier
+
+@pytest.fixture(scope='function')
+def login_courier():
+    courier = {}
+
+    def _login_courier(data):
+        nonlocal courier
+        courier_requests = CourierRequests()
+        logged_in_courier = courier_requests.post_login_courier(data=data)
+        courier = {"logged_in_courier": logged_in_courier}
+        return courier
+
+    yield _login_courier
     CourierRequests().delete_courier(courier_id=courier['logged_in_courier']['id'])

@@ -1,5 +1,7 @@
 import pytest
 import allure
+from faker import Faker
+fake = Faker()
 
 from data.custom_requests import CourierRequests
 
@@ -7,14 +9,14 @@ from data.custom_requests import CourierRequests
 @allure.feature('Тест создания курьера')
 class TestCreateCourier:
     @allure.title('Создание курьера с рандомным логином')
-    def test_create_courier(self, create_user_payload):
-        payload = create_user_payload(login='random', password='12345678', firstname='mike')
+    def test_create_courier(self):
+        payload = {'login': fake.name(), 'password': '12345678', 'firstname':'mike'}
         response = CourierRequests().post_create_courier(data=payload)
         assert response['ok']
 
     @allure.title('Создание двух одинаковых курьеров')
-    def test_create_same_courier(self, create_user_payload):
-        payload = create_user_payload(login='random', password='12345678', firstname='mike')
+    def test_create_same_courier(self):
+        payload = {'login': fake.name(), 'password': '12345678', 'firstname':'mike'}
         CourierRequests().post_create_courier(data=payload)
 
         response = CourierRequests().post_create_courier(data=payload, status=409)
